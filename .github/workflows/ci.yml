@@ -1,0 +1,32 @@
+# Workflow'un adı (Actions sekmesinde görünür)
+name: CI
+
+# NE ZAMAN çalışsın?
+on:
+  push:
+    branches: [main]      # main'e her push'ta
+  pull_request:           # ve her pull request'te
+
+# NE yapsın?
+jobs:
+  test:                         # job'ın adı
+    runs-on: ubuntu-latest      # GitHub'ın verdiği boş Ubuntu bilgisayar
+
+    steps:
+      # 1. Kodu runner'a indir (yoksa makine boş!)
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      # 2. Python 3.12 kur (Dockerfile ile aynı sürüm)
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 3. Paketleri kur
+      - name: Paketleri kur
+        run: pip install -r requirements.txt
+
+      # 4. Testleri çalıştır
+      - name: Testleri çalıştır
+        run: pytest -v
