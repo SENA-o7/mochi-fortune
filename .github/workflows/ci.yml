@@ -31,7 +31,7 @@ jobs:
       - name: Testleri çalıştır
         run: pytest -v
 
-          docker:
+docker:
     needs: test                       # test GEÇMEDEN başlama!
     if: github.event_name == 'push'   # sadece push'ta (PR'da değil)
     runs-on: ubuntu-latest
