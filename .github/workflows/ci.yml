@@ -30,3 +30,36 @@ jobs:
       # 4. Testleri çalıştır
       - name: Testleri çalıştır
         run: pytest -v
+
+          docker:
+    needs: test                       # test GEÇMEDEN başlama!
+    if: github.event_name == 'push'   # sadece push'ta (PR'da değil)
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Kodu indir (her job ayrı bilgisayar, kod yine yok!)
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      # 2. Docker build aracını hazırla
+      - name: Docker Buildx kur
+        uses: docker/setup-buildx-action@v3
+
+      # 3. Docker Hub'a giriş (secret'lar burada kullanılıyor)
+      - name: Docker Hub'a giriş
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 4. Build al ve Docker Hub'a yükle
+      - name: Build ve push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/mochi-fortune:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/mochi-fortune:latest
+
+
