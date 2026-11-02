@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <!-- Türkçe karakterler ve emojiler düzgün görünsün -->
+    <meta charset="UTF-8">
+    <!-- Telefonda da düzgün görünsün -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mochi Fortune</title>
+</head>
+<body>
+    <h1>Mochi Fortune</h1>
+    <p>🍡</p>
+
+    <!-- Tıklanacak buton -->
+    <button id="btn">Falıma bak</button>
+
+    <!-- Mesajın yazılacağı boş alan -->
+    <p id="mesaj"></p>
+
+    <!-- JavaScript: en altta, çünkü butonun önce oluşması lazım -->
+    <script>
+        const buton = document.getElementById("btn");
+        const mesajAlani = document.getElementById("mesaj");
+
+        buton.addEventListener("click", async () => {
+            const cevap = await fetch("/api/fortune");  // Flask'a istek at
+            const veri = await cevap.json();            // cevabı JSON olarak oku
+            mesajAlani.textContent = veri.fortune;      // mesajı ekrana yaz
+        });
+    </script>
+</body>
+</html>
