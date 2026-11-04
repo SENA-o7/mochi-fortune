@@ -61,3 +61,22 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/mochi-fortune:${{ github.sha }}
             ${{ secrets.DOCKERHUB_USERNAME }}/mochi-fortune:latest
+
+  deploy:
+    needs: docker                     # image Docker Hub'a yüklenmeden başlama!
+    runs-on: ubuntu-latest
+
+    steps:
+      # SSH ile EC2'ye bağlan ve yeni sürümü çalıştır
+      - name: EC2'ye deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/mochi-fortune:${{ github.sha }}
+            docker stop api || true
+            docker rm api || true
+            docker run -d --name api --restart unless-stopped -p 80:5000 ${{ secrets.DOCKERHUB_USERNAME }}/mochi-fortune:${{ github.sha }}
+            docker image prune -f

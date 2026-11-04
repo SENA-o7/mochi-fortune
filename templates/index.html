@@ -5,28 +5,341 @@
     <meta charset="UTF-8">
     <!-- Telefonda da düzgün görünsün -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mochi Fortune</title>
+    <title>Mochi</title>
+
+    <!-- Piksel font (Türkçe harfleri destekliyor) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Renk paleti: pastel pembe, krem ve mürdüm */
+        :root {
+            --bg: #ffe9f0;
+            --bg-dot: #ffd3e1;
+            --card: #fffaf3;
+            --ink: #5b4a5e;
+            --pink: #ff9fb8;
+            --pink-dark: #f27a9b;
+            --mint: #bfe8d7;
+            --lilac: #d9c8ff;
+            --shadow: #e8b4c6;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            font-family: "Pixelify Sans", monospace;
+            color: var(--ink);
+            /* Piksel nokta deseni */
+            background-color: var(--bg);
+            background-image: radial-gradient(var(--bg-dot) 2px, transparent 2px);
+            background-size: 20px 20px;
+            overflow-x: hidden;
+        }
+
+        /* Piksel köşeli çerçeve: 4 yöne gölge vererek köşeleri "kesiyoruz" */
+        .pixel-box {
+            background: var(--card);
+            box-shadow:
+                0 -4px 0 0 var(--ink),
+                0 4px 0 0 var(--ink),
+                -4px 0 0 0 var(--ink),
+                4px 0 0 0 var(--ink),
+                8px 8px 0 0 var(--shadow);
+        }
+
+        /* Retro pencere */
+        .window {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .title-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: var(--pink);
+            border-bottom: 4px solid var(--ink);
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .title-bar .dots { display: flex; gap: 6px; }
+        .title-bar .dots span {
+            width: 12px;
+            height: 12px;
+            background: var(--card);
+            box-shadow: 0 0 0 2px var(--ink);
+        }
+
+        .content {
+            padding: 24px 20px 28px;
+            text-align: center;
+        }
+
+        .korean {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            margin: 4px 0 0;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Mochi karakteri: tıklanabilir */
+        .mochi {
+            display: block;
+            margin: 20px auto 8px;
+            padding: 0;
+            border: none;
+            background: none;
+            cursor: pointer;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .mochi svg {
+            width: 128px;
+            height: auto;
+            display: block;
+        }
+
+        .mochi.bounce { animation: bounce 0.4s steps(4); }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(1, 1); }
+            30% { transform: scale(1.12, 0.88); }
+            60% { transform: scale(0.94, 1.08); }
+            100% { transform: scale(1, 1); }
+        }
+
+        /* Konuşma balonu */
+        .bubble {
+            position: relative;
+            margin: 20px 4px 24px;
+            padding: 18px 16px;
+            min-height: 96px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            line-height: 1.5;
+            background: #fff;
+        }
+
+        /* Balonun Mochi'ye bakan piksel ucu */
+        .bubble::before {
+            content: "";
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            margin-left: -6px;
+            background: var(--ink);
+            box-shadow: 0 4px 0 0 var(--ink);
+        }
+
+        /* Yazı yazılırken yanıp sönen imleç */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            margin-left: 2px;
+            vertical-align: -3px;
+            background: var(--pink-dark);
+            animation: blink 0.8s steps(1) infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Buton */
+        .btn {
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--ink);
+            padding: 12px 22px;
+            border: none;
+            cursor: pointer;
+            background: var(--mint);
+            box-shadow:
+                0 -4px 0 0 var(--ink),
+                0 4px 0 0 var(--ink),
+                -4px 0 0 0 var(--ink),
+                4px 0 0 0 var(--ink),
+                inset -4px -4px 0 0 #9fd3bd;
+        }
+
+        .btn:hover { background: #ccefe1; }
+
+        .btn:active {
+            transform: translate(2px, 2px);
+            box-shadow:
+                0 -4px 0 0 var(--ink),
+                0 4px 0 0 var(--ink),
+                -4px 0 0 0 var(--ink),
+                4px 0 0 0 var(--ink),
+                inset 4px 4px 0 0 #9fd3bd;
+        }
+
+        .footer {
+            margin-top: 22px;
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        /* Arka planda parlayan piksel yıldızlar */
+        .sparkle {
+            position: fixed;
+            color: var(--pink-dark);
+            font-size: 18px;
+            pointer-events: none;
+            animation: twinkle 2.4s steps(3) infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .mochi, .sparkle, .cursor { animation: none; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Mochi Fortune</h1>
-    <p>🍡</p>
+    <!-- Dekoratif yıldızlar -->
+    <span class="sparkle" style="top: 10%; left: 12%;">✦</span>
+    <span class="sparkle" style="top: 18%; right: 14%; animation-delay: 0.8s;">✧</span>
+    <span class="sparkle" style="bottom: 16%; left: 18%; animation-delay: 1.6s;">✧</span>
+    <span class="sparkle" style="bottom: 10%; right: 10%; animation-delay: 0.4s;">✦</span>
 
-    <!-- Tıklanacak buton -->
-    <button id="btn">Falıma bak</button>
+    <main class="window pixel-box">
+        <div class="title-bar">
+            <span>♡ mochi.exe</span>
+            <div class="dots"><span></span><span></span><span></span></div>
+        </div>
 
-    <!-- Mesajın yazılacağı boş alan -->
-    <p id="mesaj"></p>
+        <div class="content">
+            <h1 class="korean">오늘의 한마디</h1>
+            <p class="subtitle">bugünün küçük notu</p>
 
-    <!-- JavaScript: en altta, çünkü butonun önce oluşması lazım -->
+            <!-- Mochi'ye tıklayınca da yeni mesaj gelir -->
+            <button class="mochi" id="mochi" aria-label="Mochi'ye dokun, yeni mesaj gelsin">
+                <svg id="mochi-svg" viewBox="0 0 16 13" shape-rendering="crispEdges"></svg>
+            </button>
+
+            <!-- Mesajın yazılacağı balon -->
+            <div class="bubble pixel-box" aria-live="polite">
+                <span id="mesaj"></span><span class="cursor" id="cursor"></span>
+            </div>
+
+            <button class="btn" id="btn">✦ bir not daha ✦</button>
+
+            <p class="footer">v2 · github actions ile otomatik deploy 🚀</p>
+        </div>
+    </main>
+
+    <!-- JavaScript: en altta, çünkü elemanların önce oluşması lazım -->
     <script>
-        const buton = document.getElementById("btn");
-        const mesajAlani = document.getElementById("mesaj");
+        // --- 1. Mochi'yi pikseller ile çiz ---
+        // Her harf bir piksel: o = çizgi, w = beyaz, s = gölge,
+        // e = göz, p = yanak, m = ağız, . = boş
+        const harita = [
+            ".....oooooo.....",
+            "...oowwwwwwoo...",
+            "..owwwwwwwwwwo..",
+            ".owwwwwwwwwwwwo.",
+            ".owwwwwwwwwwwwo.",
+            "owwwewwwwwwewwwo",
+            "owwwewwwwwwewwwo",
+            "owwppwwmmwwppwwo",
+            "owwwwwwwwwwwwwwo",
+            "owwwwwwwwwwwwwso",
+            "osswwwwwwwwwwsso",
+            ".osssssssssssso.",
+            "..oooooooooooo..",
+        ];
+        const renkler = {
+            o: "#5b4a5e", w: "#fffaf5", s: "#f3dfe7",
+            e: "#3d2f3f", p: "#ff9fb8", m: "#c0587a",
+        };
 
-        buton.addEventListener("click", async () => {
+        const svg = document.getElementById("mochi-svg");
+        harita.forEach((satir, y) => {
+            [...satir].forEach((harf, x) => {
+                if (harf === ".") return;
+                const piksel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                piksel.setAttribute("x", x);
+                piksel.setAttribute("y", y);
+                piksel.setAttribute("width", 1);
+                piksel.setAttribute("height", 1);
+                piksel.setAttribute("fill", renkler[harf]);
+                if (harf === "e") piksel.classList.add("goz");
+                svg.appendChild(piksel);
+            });
+        });
+
+        // Mochi ara sıra göz kırpsın
+        setInterval(() => {
+            const gozler = document.querySelectorAll(".goz");
+            gozler.forEach((g) => g.setAttribute("fill", renkler.w));
+            setTimeout(() => gozler.forEach((g) => g.setAttribute("fill", renkler.e)), 160);
+        }, 3500);
+
+        // --- 2. Mesajı getir ve daktilo gibi yaz ---
+        const mesajAlani = document.getElementById("mesaj");
+        const imlec = document.getElementById("cursor");
+        const mochi = document.getElementById("mochi");
+        let yaziyor = null;
+
+        async function yeniMesaj() {
+            // Mochi zıplasın
+            mochi.classList.remove("bounce");
+            void mochi.offsetWidth;
+            mochi.classList.add("bounce");
+
             const cevap = await fetch("/api/fortune");  // Flask'a istek at
             const veri = await cevap.json();            // cevabı JSON olarak oku
-            mesajAlani.textContent = veri.fortune;      // mesajı ekrana yaz
-        });
+
+            // Önceki yazma işlemini durdur, yenisini harf harf yaz
+            clearInterval(yaziyor);
+            const harfler = [...veri.fortune];
+            let i = 0;
+            mesajAlani.textContent = "";
+            imlec.style.display = "inline-block";
+            yaziyor = setInterval(() => {
+                mesajAlani.textContent += harfler[i];
+                i++;
+                if (i >= harfler.length) {
+                    clearInterval(yaziyor);
+                    imlec.style.display = "none";
+                }
+            }, 35);
+        }
+
+        document.getElementById("btn").addEventListener("click", yeniMesaj);
+        mochi.addEventListener("click", yeniMesaj);
+        mochi.addEventListener("animationend", () => mochi.classList.remove("bounce"));
+
+        // Sayfa açılınca ilk mesaj kendiliğinden gelsin
+        yeniMesaj();
     </script>
 </body>
 </html>
