@@ -12,24 +12,36 @@ jobs:
   test:                         # job'ın adı
     runs-on: ubuntu-latest      # GitHub'ın verdiği boş Ubuntu bilgisayar
 
+    # Aynı testi 3 farklı Python sürümünde, paralel çalıştır
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
     steps:
       # 1. Kodu runner'a indir (yoksa makine boş!)
       - name: Kodu indir
         uses: actions/checkout@v4
 
-      # 2. Python 3.12 kur (Dockerfile ile aynı sürüm)
-      - name: Python kur
+      # 2. Matrix'teki Python sürümünü kur
+      - name: Python ${{ matrix.python-version }} kur
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
 
       # 3. Paketleri kur
       - name: Paketleri kur
         run: pip install -r requirements.txt
 
-      # 4. Testleri çalıştır
-      - name: Testleri çalıştır
-        run: pytest -v
+      # 4. Testleri coverage ölçümüyle çalıştır
+      - name: Testleri çalıştır (coverage ile)
+        run: pytest -v --cov=app --cov-report=xml --cov-report=term
+
+      # 5. Coverage raporunu indirilebilir dosya (artifact) olarak sakla
+      - name: Coverage raporunu yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-python-${{ matrix.python-version }}   # her sürüm için ayrı isim
+          path: coverage.xml
 
   docker:
     needs: test                       # test GEÇMEDEN başlama!
@@ -80,3 +92,23 @@ jobs:
             docker rm api || true
             docker run -d --name api --restart unless-stopped -p 80:5000 ${{ secrets.DOCKERHUB_USERNAME }}/mochi-fortune:${{ github.sha }}
             docker image prune -f
+
+  notify:
+    needs: [test, docker, deploy]     # üçünü de izle
+    if: failure()                     # SADECE biri kırmızı yanarsa çalış
+    runs-on: ubuntu-latest
+
+    steps:
+      # Telegram grubuna hata mesajı gönder
+      - name: Telegram'a hata bildirimi
+        env:
+          TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          LOG_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${CHAT_ID}" \
+            --data-urlencode "text=🔴 mochi-fortune pipeline'ı kırmızı yandı!
+          Commit: ${GITHUB_SHA::7}
+          Gönderen: ${GITHUB_ACTOR}
+          Log: ${LOG_URL}"
