@@ -85,16 +85,10 @@
             text-align: center;
         }
 
-        .korean {
+        .heading {
             margin: 0;
-            font-size: 28px;
-            letter-spacing: 2px;
-        }
-
-        .subtitle {
-            margin: 4px 0 0;
-            font-size: 14px;
-            opacity: 0.7;
+            font-size: 26px;
+            letter-spacing: 1px;
         }
 
         /* Mochi karakteri: tıklanabilir */
@@ -198,12 +192,6 @@
                 inset 4px 4px 0 0 #9fd3bd;
         }
 
-        .footer {
-            margin-top: 22px;
-            font-size: 12px;
-            opacity: 0.6;
-        }
-
         /* Arka planda parlayan piksel yıldızlar */
         .sparkle {
             position: fixed;
@@ -237,8 +225,7 @@
         </div>
 
         <div class="content">
-            <h1 class="korean">오늘의 한마디</h1>
-            <p class="subtitle">bugünün küçük notu</p>
+            <h1 class="heading">bugünün küçük notu</h1>
 
             <!-- Mochi'ye tıklayınca da yeni mesaj gelir -->
             <button class="mochi" id="mochi" aria-label="Mochi'ye dokun, yeni mesaj gelsin">
@@ -251,8 +238,6 @@
             </div>
 
             <button class="btn" id="btn">✦ bir not daha ✦</button>
-
-            <p class="footer">v2 · github actions ile otomatik deploy 🚀</p>
         </div>
     </main>
 
