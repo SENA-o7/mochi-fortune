@@ -91,6 +91,13 @@ jobs:
             docker stop api || true
             docker rm api || true
             docker run -d --name api --restart unless-stopped -p 80:5000 ${{ secrets.DOCKERHUB_USERNAME }}/mochi-fortune:${{ github.sha }}
+            docker stop bot || true
+            docker rm bot || true
+            docker run -d --name bot --restart unless-stopped \
+              -e TELEGRAM_TOKEN='${{ secrets.TELEGRAM_TOKEN }}' \
+              -e TELEGRAM_CHAT_ID='${{ secrets.TELEGRAM_CHAT_ID }}' \
+              -e TELEGRAM_KULLANICILAR='${{ secrets.TELEGRAM_KULLANICILAR }}' \
+              ${{ secrets.DOCKERHUB_USERNAME }}/mochi-fortune:${{ github.sha }} python bot.py
             docker image prune -f
 
   notify:
