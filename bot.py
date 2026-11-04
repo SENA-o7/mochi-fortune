@@ -12,6 +12,7 @@ DURUMLAR = {
     "mola": ("☕ Moladayım", "☕ {isim} molada"),
     "kalkti": ("🚶 Masadan kalktım", "🚶 {isim} masadan kalktı"),
     "bitti": ("🌙 Ders bitti, free day", "🌙 {isim} için ders bitti, bugün free day!"),
+    "sitem": ("😤 Sena'ya sitem et", "😤 {isim} diyor ki: Sena, Allah belanı vermesin, ne uğraştırdın bizi! 😂"),
 }
 
 
