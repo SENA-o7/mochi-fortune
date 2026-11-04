@@ -75,7 +75,7 @@ def index():
 # Sağlık kontrolü: "uygulama yaşıyor mu?"
 @app.route("/health")
 def health():
-    return jsonify(status="bozuk")
+    return jsonify(status="ok")
 
 
 # Rastgele fal: listeden bir mesaj seçip JSON olarak döndürür
